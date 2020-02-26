@@ -1,0 +1,12 @@
+<set xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 左滑，顯示下一個，進入動畫 -->
+    <translate
+        android:duration="1000"
+        android:fromXDelta="100%p"
+        android:toXDelta="0" />
+
+    <alpha
+        android:duration="1000"
+        android:fromAlpha="0.0"
+        android:toAlpha="1.0" />
+</set>
