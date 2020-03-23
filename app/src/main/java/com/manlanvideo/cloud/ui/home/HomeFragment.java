@@ -1,116 +1,170 @@
 package com.manlanvideo.cloud.ui.home;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
-import android.view.GestureDetector;
+import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
-import android.widget.MediaController;
-import android.widget.TextView;
-import android.widget.Toast;
-import android.widget.VideoView;
+import android.widget.AbsListView;
 
-import androidx.annotation.Nullable;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.manlanvideo.cloud.R;
+import com.manlanvideo.cloud.api.ApiHttp;
+import com.manlanvideo.cloud.api.ApiResult;
+import com.manlanvideo.cloud.api.entity.Clip;
+import com.manlanvideo.cloud.ui.home.adapter.VideoRecyclerViewAdapter;
+import com.manlanvideo.cloud.ui.home.adapter.items.BaseVideoItem;
+import com.manlanvideo.cloud.ui.home.adapter.items.ItemFactory;
+import com.volokh.danylo.video_player_manager.manager.PlayerItemChangeListener;
+import com.volokh.danylo.video_player_manager.manager.SingleVideoPlayerManager;
+import com.volokh.danylo.video_player_manager.manager.VideoPlayerManager;
+import com.volokh.danylo.video_player_manager.meta.MetaData;
+import com.volokh.danylo.visibility_utils.calculator.DefaultSingleItemCalculatorCallback;
+import com.volokh.danylo.visibility_utils.calculator.ListItemsVisibilityCalculator;
+import com.volokh.danylo.visibility_utils.calculator.SingleListViewItemActiveCalculator;
+import com.volokh.danylo.visibility_utils.scroll_utils.ItemsPositionGetter;
+import com.volokh.danylo.visibility_utils.scroll_utils.RecyclerViewItemPositionGetter;
 
-import java.net.URI;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class HomeFragment extends Fragment {
 
-    private static final int FLING_MIN_DISTANCE = 50;
 
-    private  GestureDetector.SimpleOnGestureListener myGestureListener;
 
     private HomeViewModel homeViewModel;
 
+    private final ArrayList<BaseVideoItem> mList = new ArrayList<>();
+    /**
+     * Only the one (most visible) view should be active (and playing).
+     * To calculate visibility of views we use {@link SingleListViewItemActiveCalculator}
+     */
+    private final ListItemsVisibilityCalculator mVideoVisibilityCalculator =
+            new SingleListViewItemActiveCalculator(new DefaultSingleItemCalculatorCallback(), mList);
+
+    private RecyclerView mRecyclerView;
+    private VideoRecyclerViewAdapter mVideoRecyclerViewAdapter;
+    private LinearLayoutManager mLayoutManager;
+    /**
+     * ItemsPositionGetter is used by {@link ListItemsVisibilityCalculator} for getting information about
+     * items position in the RecyclerView and LayoutManager
+     */
+    private ItemsPositionGetter mItemsPositionGetter;
+    /**
+     * Here we use {@link SingleVideoPlayerManager}, which means that only one video playback is possible.
+     */
+    private final VideoPlayerManager<MetaData> mVideoPlayerManager = new SingleVideoPlayerManager(new PlayerItemChangeListener() {
+        @Override
+        public void onPlayerItemChanged(MetaData metaData) {
+
+        }
+    });
+    private int mScrollState = AbsListView.OnScrollListener.SCROLL_STATE_IDLE;
+
     public View onCreateView(@NonNull final LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        homeViewModel =
-                ViewModelProviders.of(this).get(HomeViewModel.class);
+
         View root = inflater.inflate(R.layout.fragment_home, container, false);
-        final TextView textView = root.findViewById(R.id.text_home);
-        homeViewModel.getText().observe(this, new Observer<String>() {
+
+        homeViewModel = ViewModelProviders.of(this).get(HomeViewModel.class);
+        homeViewModel.getClipList().observe(this, new Observer<List<Clip>>() {
             @Override
-            public void onChanged(@Nullable String s) {
-                textView.setText(s);
-            }
-        });
+            public void onChanged(List<Clip> clips) {
+                for(Clip clip: clips) {
+                    try {
+                        mList.add(ItemFactory.createItemFromDirectLink(clip.getTitle(), "http://s-dev.manlanvideo.com/" + clip.getPath(), mVideoPlayerManager, R.drawable.video_sample_2_pic));
+                        if(mVideoRecyclerViewAdapter != null) {
+                            mVideoRecyclerViewAdapter.notifyDataSetChanged();
+                            mRecyclerView.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mVideoVisibilityCalculator.onScrollStateIdle(
+                                            mItemsPositionGetter,
+                                            mLayoutManager.findFirstVisibleItemPosition(),
+                                            mLayoutManager.findLastVisibleItemPosition());
 
-        final FrameLayout videoFrame = root.findViewById(R.id.videoFrame);
-        final VideoView videoView1 = requestVideoView(inflater.getContext(), root, R.id.videoView1);
-//        final VideoView videoView2 = requestVideoView(inflater.getContext(), root, R.id.videoView2);
-//        final VideoView videoView3 = requestVideoView(inflater.getContext(), root, R.id.videoView3);
-//        final VideoView videoView4 = requestVideoView(inflater.getContext(), root, R.id.videoView4);
-//        final VideoView videoView5 = requestVideoView(inflater.getContext(), root, R.id.videoView5);
-
-//        videoFrame.bringChildToFront(videoView3);
-
-        homeViewModel.getVideoUrls().observe(this, new Observer<String[][]>() {
-            @Override
-            public void onChanged(String[][] urls) {
-                videoView1.setVideoURI(Uri.parse(urls[0][0]));
-//                videoView2.setVideoURI(Uri.parse(urls[0][1]));
-//                videoView3.setVideoURI(Uri.parse(urls[1][0]));
-
-            }
-        });
-
-        final GestureDetector detector =  new GestureDetector(inflater.getContext(), new GestureDetector.SimpleOnGestureListener() {
-            @Override
-            public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-                float x = e1.getX() - e2.getX();
-                float x2 = e2.getX() - e1.getX();
-                float y = e1.getY() - e2.getY();
-                float y2 = e2.getY() - e1.getY();
-                // 判断滑动距离是否大于所设置的最小滑动距离
-                if (x > FLING_MIN_DISTANCE) {
-                    Toast.makeText(inflater.getContext(), "向左手势", Toast.LENGTH_SHORT).show();
-//                    videoFrame.bringChildToFront(videoView2);
-                } else if (x2 > FLING_MIN_DISTANCE) {
-                    Toast.makeText(inflater.getContext(), "向右手势", Toast.LENGTH_SHORT).show();
-                } else if (y > FLING_MIN_DISTANCE) {
-                    Toast.makeText(inflater.getContext(), "向上手势", Toast.LENGTH_SHORT).show();
-//                    videoFrame.bringChildToFront(videoView3);
-                } else if (y2 > FLING_MIN_DISTANCE) {
-                    Toast.makeText(inflater.getContext(), "向下手势", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
-                return false;
             }
-
         });
 
-        videoFrame.setOnTouchListener(new View.OnTouchListener() {
+        mRecyclerView = root.findViewById(R.id.recycler_view);
+        // use this setting to improve performance if you know that changes
+        // in content do not change the layout size of the RecyclerView
+        mRecyclerView.setHasFixedSize(true);
+
+        // use a linear layout manager
+        mLayoutManager = new LinearLayoutManager(getActivity());
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mVideoRecyclerViewAdapter = new VideoRecyclerViewAdapter(mVideoPlayerManager, getActivity(), mList);
+        mRecyclerView.setAdapter(mVideoRecyclerViewAdapter);
+
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+
             @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                detector.onTouchEvent(motionEvent);
-                return true;
+            public void onScrollStateChanged(RecyclerView recyclerView, int scrollState) {
+                mScrollState = scrollState;
+                if(scrollState == RecyclerView.SCROLL_STATE_IDLE && !mList.isEmpty()){
+
+                    mVideoVisibilityCalculator.onScrollStateIdle(
+                            mItemsPositionGetter,
+                            mLayoutManager.findFirstVisibleItemPosition(),
+                            mLayoutManager.findLastVisibleItemPosition());
+                }
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if(!mList.isEmpty()){
+                    mVideoVisibilityCalculator.onScroll(
+                            mItemsPositionGetter,
+                            mLayoutManager.findFirstVisibleItemPosition(),
+                            mLayoutManager.findLastVisibleItemPosition() - mLayoutManager.findFirstVisibleItemPosition() + 1,
+                            mScrollState);
+                }
             }
         });
-        videoFrame.setClickable(true);
-        videoFrame.setLongClickable(true);
+        mItemsPositionGetter = new RecyclerViewItemPositionGetter(mLayoutManager, mRecyclerView);
 
         return root;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(!mList.isEmpty()){
+            // need to call this method from list view handler in order to have filled list
+            mRecyclerView.post(new Runnable() {
+                @Override
+                public void run() {
+                    mVideoVisibilityCalculator.onScrollStateIdle(
+                            mItemsPositionGetter,
+                            mLayoutManager.findFirstVisibleItemPosition(),
+                            mLayoutManager.findLastVisibleItemPosition());
 
-
-    private VideoView requestVideoView(Context context,  View root, int id) {
-        final VideoView videoView = root.findViewById(id);
-        MediaController mc = new MediaController(context);
-        mc.setAnchorView(videoView);
-        videoView.setMediaController(mc);
-        return videoView;
+                }
+            });
+        }
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        // we have to stop any playback in onStop
+        mVideoPlayerManager.resetMediaPlayer();
+    }
 
 }

@@ -1,2 +1,2 @@
-include ':app'
+include ':app', ':video-player-manager', ':list-visibility-utils'
 rootProject.name='cloudvideo'

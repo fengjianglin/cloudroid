@@ -1,38 +1,44 @@
 package com.manlanvideo.cloud.ui.home;
 
+import android.app.Application;
+
+import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import java.util.ArrayList;
+import com.manlanvideo.cloud.api.ApiHttp;
+import com.manlanvideo.cloud.api.ApiResult;
+import com.manlanvideo.cloud.api.entity.Clip;
+
 import java.util.List;
 
-public class HomeViewModel extends ViewModel {
+public class HomeViewModel extends AndroidViewModel {
 
-    private String[][] urls = {
-            {"https://uzshare.com/wujiandao1.mp4","https://uzshare.com/wujiandao2.mp4","https://uzshare.com/wujiandao3.mp4"},
-            {"https://uzshare.com/wujiandao4.mp4","https://uzshare.com/wujiandao5.mp4","https://uzshare.com/wujiandao6.mp4"},
-            {"https://uzshare.com/wujiandao7.mp4","https://uzshare.com/wujiandao8.mp4","https://uzshare.com/wujiandao9.mp4"}};
+    private MutableLiveData<List<Clip>> clipList = null;
 
-    private MutableLiveData<String> mText;
-
-    private MutableLiveData<String[][]> mVideoUrls;
-
-    public HomeViewModel() {
-
-        mVideoUrls = new MutableLiveData<>();
-        mVideoUrls.setValue(urls);
-
-        mText = new MutableLiveData<>();
-        mText.setValue(urls[0][0]);
+    public HomeViewModel(@NonNull Application application) {
+        super(application);
     }
 
-    public LiveData<String> getText() {
-        return mText;
+    public LiveData<List<Clip>> getClipList() {
+        if (clipList == null) {
+            clipList = new MutableLiveData<List<Clip>>();
+            loadClips();
+        }
+        return clipList;
     }
 
+    private void loadClips() {
+        // Do an asyncronous operation to fetch users.
+        new Thread(){
+            public void run() {
+                ApiResult<List<Clip>> list =  ApiHttp.getForList("/clip/list", Clip.class);
 
-    public LiveData<String[][]> getVideoUrls() {
-        return mVideoUrls;
+                clipList.postValue(list.getData());
+            }
+        }.start();
     }
+
 }
