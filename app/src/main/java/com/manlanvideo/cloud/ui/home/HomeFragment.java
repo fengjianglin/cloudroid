@@ -75,7 +75,7 @@ public class HomeFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_home, container, false);
 
         homeViewModel = ViewModelProviders.of(this).get(HomeViewModel.class);
-        homeViewModel.getClipList().observe(this, new Observer<List<Clip>>() {
+        homeViewModel.getClipList().observe(getViewLifecycleOwner(), new Observer<List<Clip>>() {
             @Override
             public void onChanged(List<Clip> clips) {
                 for(Clip clip: clips) {
