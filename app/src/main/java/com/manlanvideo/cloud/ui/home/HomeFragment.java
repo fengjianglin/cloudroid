@@ -80,7 +80,7 @@ public class HomeFragment extends Fragment {
             public void onChanged(List<Clip> clips) {
                 for(Clip clip: clips) {
                     try {
-                        mList.add(ItemFactory.createItemFromDirectLink(clip.getTitle(), "http://s-dev.manlanvideo.com/" + clip.getPath(), mVideoPlayerManager, R.drawable.video_sample_2_pic));
+                        mList.add(ItemFactory.createItemFromDirectLink(clip.getTitle(), "http://s-dev.manlanvideo.com/" + clip.getPath(), mVideoPlayerManager, R.drawable.a1));
                         if(mVideoRecyclerViewAdapter != null) {
                             mVideoRecyclerViewAdapter.notifyDataSetChanged();
                             mRecyclerView.post(new Runnable() {
