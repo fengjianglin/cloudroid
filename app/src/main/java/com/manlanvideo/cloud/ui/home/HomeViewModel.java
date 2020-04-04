@@ -41,8 +41,8 @@ public class HomeViewModel extends AndroidViewModel {
         Observable<ApiResult<List<Clip>>> observable = clipService.getForList();
         ApiHandler.getInstance().toSubscribe(observable, new ApiCallBack<List<Clip>>() {
             @Override
-            public void success(String status, String msg, List<Clip> date) {
-                clipList.postValue(date);
+            public void success(String status, String msg, List<Clip> data) {
+                clipList.postValue(data);
             }
 
             @Override

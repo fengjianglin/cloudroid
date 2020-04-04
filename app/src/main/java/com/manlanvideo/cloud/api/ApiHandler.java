@@ -15,7 +15,9 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ApiHandler {
-    private static String BASE_URL = "http://192.168.0.104:7002/api/";
+
+    private static String BASE_URL = "http://106.13.68.122:7002/api/";
+
     private static final int CONNECT_TIMEOUT = 5;
     private static final int WRITE_TIMEOUT = 5;
     private static final int READ_TIMEOUT = 5;
