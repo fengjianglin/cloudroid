@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">cloudvideo</string>
+    <string name="app_name">视频记</string>
     <string name="title_home">首页</string>
     <string name="title_dashboard">关注</string>
     <string name="title_notifications">我的</string>
