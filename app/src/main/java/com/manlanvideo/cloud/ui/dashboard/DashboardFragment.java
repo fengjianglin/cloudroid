@@ -37,13 +37,6 @@ public class DashboardFragment extends Fragment {
         dashboardViewModel =
                 ViewModelProviders.of(this).get(DashboardViewModel.class);
         View root = inflater.inflate(R.layout.fragment_dashboard, container, false);
-        final TextView textView = root.findViewById(R.id.text_dashboard);
-        dashboardViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-                textView.setText(s);
-            }
-        });
 
         flipper = root.findViewById(R.id.flipper);
         flipper.addView(getImageView(context, R.drawable.a1));
@@ -81,10 +74,9 @@ public class DashboardFragment extends Fragment {
 
         final int FLING_MIN_DISTANCE = 100, FLING_MIN_VELOCITY = 200;
 
-        //不知道为什么，不加上onDown函数的话，onFling就不会响应
         @Override
         public boolean onDown(MotionEvent e) {
-            return true;//这里需要返回true才能监听手势
+            return true; // 这里需要返回true才能监听手势
         }
         @Override
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
