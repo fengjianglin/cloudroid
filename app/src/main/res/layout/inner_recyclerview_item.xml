@@ -5,8 +5,10 @@
 
     <ImageView
         android:id="@+id/inner_recyclerview_imageview"
-        android:background="@android:color/black"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_margin="8dp"
+        android:padding="2dp"
+        android:background="#B95738"/>
 
 </RelativeLayout>
