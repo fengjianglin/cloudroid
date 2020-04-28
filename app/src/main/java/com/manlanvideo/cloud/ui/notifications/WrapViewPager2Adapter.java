@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -29,7 +30,6 @@ public class WrapViewPager2Adapter extends RecyclerView.Adapter<WrapViewPager2Ad
 
     @Override
     public void onBindViewHolder(@NonNull BaseViewHolder holder, int position) {
-        holder.imageView.setImageResource(datas.get(position));
     }
 
     @Override
@@ -39,27 +39,48 @@ public class WrapViewPager2Adapter extends RecyclerView.Adapter<WrapViewPager2Ad
 
     public  class  BaseViewHolder extends RecyclerView.ViewHolder{
 
-        ViewPager2 viewPager2;
-        private LinkedList<Integer> datas;
+        private ViewPager2 viewPager2;
+        private LinkedList<Integer> viewPager2Datas;
 
-        ImageView imageView;
+        private RecyclerView recyclerView;
+        private LinkedList<Integer> recyclerViewDatas;
+
         public BaseViewHolder(@NonNull View itemView) {
             super(itemView);
-            this.imageView = itemView.findViewById(R.id.imageview);
             viewPager2 = itemView.findViewById(R.id.inner_viewpager2);
-            datas =new LinkedList<>();
-            datas.add(R.drawable.a1);
-            datas.add(R.drawable.a2);
-            datas.add(R.drawable.a3);
-            datas.add(R.drawable.a4);
-            datas.add(R.drawable.a5);
-            datas.add(R.drawable.a6);
-            datas.add(R.drawable.a7);
-            datas.add(R.drawable.a8);
-            datas.add(R.drawable.a9);
-            InnerViewPager2Adapter baseAdapter =new InnerViewPager2Adapter(datas);
-            viewPager2.setAdapter(baseAdapter);
+            viewPager2Datas =new LinkedList<>();
+            viewPager2Datas.add(R.drawable.a1);
+            viewPager2Datas.add(R.drawable.a2);
+            viewPager2Datas.add(R.drawable.a3);
+            viewPager2Datas.add(R.drawable.a4);
+            viewPager2Datas.add(R.drawable.a5);
+            viewPager2Datas.add(R.drawable.a6);
+            viewPager2Datas.add(R.drawable.a7);
+            viewPager2Datas.add(R.drawable.a8);
+            viewPager2Datas.add(R.drawable.a9);
+            InnerViewPager2Adapter innerViewPager2Adapter = new InnerViewPager2Adapter(viewPager2Datas);
+            viewPager2.setAdapter(innerViewPager2Adapter);
             viewPager2.setUserInputEnabled(true);
+
+
+            recyclerView = itemView.findViewById(R.id.inner_recyclerview);
+            // 设置布局
+            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(itemView.getContext());
+            linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+            recyclerView.setLayoutManager(linearLayoutManager);
+
+            recyclerViewDatas =new LinkedList<>();
+            recyclerViewDatas.add(R.drawable.a1);
+            recyclerViewDatas.add(R.drawable.a2);
+            recyclerViewDatas.add(R.drawable.a3);
+            recyclerViewDatas.add(R.drawable.a4);
+            recyclerViewDatas.add(R.drawable.a5);
+            recyclerViewDatas.add(R.drawable.a6);
+            recyclerViewDatas.add(R.drawable.a7);
+            recyclerViewDatas.add(R.drawable.a8);
+            recyclerViewDatas.add(R.drawable.a9);
+            InnerRecyclerViewAdapter innerRecyclerViewAdapter = new InnerRecyclerViewAdapter(recyclerViewDatas);
+            recyclerView.setAdapter(innerRecyclerViewAdapter);
         }
     }
 }

@@ -12,17 +12,17 @@ import com.manlanvideo.cloud.R;
 
 import java.util.LinkedList;
 
-public class InnerViewPager2Adapter extends RecyclerView.Adapter<InnerViewPager2Adapter.BaseViewHolder>{
+public class InnerRecyclerViewAdapter extends RecyclerView.Adapter<InnerRecyclerViewAdapter.BaseViewHolder>{
 
     LinkedList<Integer> datas;
 
-    public InnerViewPager2Adapter(LinkedList<Integer> datas) {
+    public InnerRecyclerViewAdapter(LinkedList<Integer> datas) {
         this.datas = datas;
     }
     @NonNull
     @Override
     public BaseViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.inner_viewpager2_item,parent,false);
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.inner_recyclerview_item, parent,false);
         return new BaseViewHolder(itemView);
     }
 
@@ -40,7 +40,7 @@ public class InnerViewPager2Adapter extends RecyclerView.Adapter<InnerViewPager2
         ImageView imageView;
         public BaseViewHolder(@NonNull View itemView) {
             super(itemView);
-            this.imageView = itemView.findViewById(R.id.inner_viewpager2_imageview);
+            this.imageView = itemView.findViewById(R.id.inner_recyclerview_imageview);
         }
     }
 }
