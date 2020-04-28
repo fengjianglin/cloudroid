@@ -40,7 +40,7 @@ public class WrapViewPager2Adapter extends RecyclerView.Adapter<WrapViewPager2Ad
     public  class  BaseViewHolder extends RecyclerView.ViewHolder{
 
         private ViewPager2 viewPager2;
-        private LinkedList<Integer> viewPager2Datas;
+        private LinkedList<String> viewPager2Datas;
 
         private RecyclerView recyclerView;
         private LinkedList<Integer> recyclerViewDatas;
@@ -48,16 +48,13 @@ public class WrapViewPager2Adapter extends RecyclerView.Adapter<WrapViewPager2Ad
         public BaseViewHolder(@NonNull View itemView) {
             super(itemView);
             viewPager2 = itemView.findViewById(R.id.inner_viewpager2);
-            viewPager2Datas =new LinkedList<>();
-            viewPager2Datas.add(R.drawable.a1);
-            viewPager2Datas.add(R.drawable.a2);
-            viewPager2Datas.add(R.drawable.a3);
-            viewPager2Datas.add(R.drawable.a4);
-            viewPager2Datas.add(R.drawable.a5);
-            viewPager2Datas.add(R.drawable.a6);
-            viewPager2Datas.add(R.drawable.a7);
-            viewPager2Datas.add(R.drawable.a8);
-            viewPager2Datas.add(R.drawable.a9);
+            viewPager2Datas = new LinkedList<>();
+            viewPager2Datas.add("http://s-dev.manlanvideo.com/clips/一分钟急救系列微课——吃东西被噎.mp4");
+            viewPager2Datas.add("http://s-dev.manlanvideo.com/clips/一分钟急救系列微课——呼吸停止.mp4");
+            viewPager2Datas.add("http://s-dev.manlanvideo.com/clips/一分钟急救系列微课——踝扭伤后不能走.mp4");
+            viewPager2Datas.add("http://s-dev.manlanvideo.com/clips/一分钟急救系列微课——外伤出血.mp4");
+            viewPager2Datas.add("http://s-dev.manlanvideo.com/clips/一分钟急救系列微课——心跳呼吸全无（心肺复苏）.mp4");
+            viewPager2Datas.add("http://s-dev.manlanvideo.com/clips/一分钟急救系列微课——心跳停止（胸外按压）.mp4");
             InnerViewPager2Adapter innerViewPager2Adapter = new InnerViewPager2Adapter(viewPager2Datas);
             viewPager2.setAdapter(innerViewPager2Adapter);
             viewPager2.setUserInputEnabled(true);

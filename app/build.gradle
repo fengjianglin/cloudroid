@@ -52,4 +52,6 @@ dependencies {
 
     implementation project(':video-player-manager')
     implementation project(':list-visibility-utils')
+
+    implementation 'com.google.android.exoplayer:exoplayer:2.11.4'
 }
