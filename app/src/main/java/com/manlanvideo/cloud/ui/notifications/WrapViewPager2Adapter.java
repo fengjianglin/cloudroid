@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -61,6 +62,8 @@ public class WrapViewPager2Adapter extends RecyclerView.Adapter<WrapViewPager2Ad
         private TabLayout tabLayout;
         private LinkedList<Data> viewPager2Datas;
 
+        private TextView titleTextView;
+
         private RecyclerView recyclerView;
         private LinkedList<Integer> recyclerViewDatas;
 
@@ -87,6 +90,14 @@ public class WrapViewPager2Adapter extends RecyclerView.Adapter<WrapViewPager2Ad
                     tab.setCustomView(itemView);
                 }
             }).attach();
+            titleTextView = itemView.findViewById(R.id.playtitle);
+            viewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+                @Override
+                public void onPageSelected(int position) {
+                    super.onPageSelected(position);
+                    titleTextView.setText("播放中：" + viewPager2Datas.get(position).videoUrl.substring(35));
+                }
+            });
 
             recyclerView = itemView.findViewById(R.id.inner_recyclerview);
             // 设置布局
