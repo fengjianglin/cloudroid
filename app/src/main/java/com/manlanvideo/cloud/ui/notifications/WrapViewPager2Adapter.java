@@ -52,6 +52,21 @@ public class WrapViewPager2Adapter extends RecyclerView.Adapter<WrapViewPager2Ad
                 {"http://s-dev.manlanvideo.com/clips/一分钟急救系列微课——心跳停止（胸外按压）.mp4","http://s-dev.manlanvideo.com/covers/a6.jpg"}
         };
 
+        private String[] lytestdata = {
+                "Kaiser: 随便说说，欢迎探讨剧情。",
+                "匿名: 人才济济的北宋-陈桥兵变后，赵匡胤一手杯酒释兵权，言与士大夫共天下，天下就并非赵家的天下了，而是赵家与士大夫的天下，然文臣位",
+                "感梦！感想！敢拼: 又是湖南卫视。70集。何年何月才完",
+                "冷情緒: 琅琊榜才是精品，也是经典",
+                "Kaiser: 🔊 33\"",
+                "匿名: 人才济济的北宋-陈桥兵变后，赵匡胤一手杯酒释兵权，言与士大夫共天下，天下就并非赵家的天下了，而是赵家与士大夫的天下，然文臣位",
+                "感梦！感想！敢拼: 又是湖南卫视。70集。何年何月才完",
+                "冷情緒: 🔊 1'53\"",
+                "Kaiser: 随便说说，欢迎探讨剧情。",
+                "匿名: 人才济济的北宋-陈桥兵变后，赵匡胤一手杯酒释兵权，言与士大夫共天下，天下就并非赵家的天下了，而是赵家与士大夫的天下，然文臣位",
+                "感梦！感想！敢拼: 又是湖南卫视。70集。何年何月才完",
+                "冷情緒: 琅琊榜才是精品，也是经典"
+        };
+
         private ViewPager2 viewPager2;
         private TabLayout tabLayout;
         private LinkedList<Data> viewPager2Datas;
@@ -59,7 +74,7 @@ public class WrapViewPager2Adapter extends RecyclerView.Adapter<WrapViewPager2Ad
         private TextView titleTextView;
 
         private RecyclerView recyclerView;
-        private LinkedList<Integer> recyclerViewDatas;
+        private LinkedList<String> recyclerViewDatas;
 
         public BaseViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -94,21 +109,14 @@ public class WrapViewPager2Adapter extends RecyclerView.Adapter<WrapViewPager2Ad
             });
 
             recyclerView = itemView.findViewById(R.id.inner_recyclerview);
-            // 设置布局
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(itemView.getContext());
             linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
             recyclerView.setLayoutManager(linearLayoutManager);
 
             recyclerViewDatas = new LinkedList<>();
-            recyclerViewDatas.add(R.drawable.a1);
-            recyclerViewDatas.add(R.drawable.a2);
-            recyclerViewDatas.add(R.drawable.a3);
-            recyclerViewDatas.add(R.drawable.a4);
-            recyclerViewDatas.add(R.drawable.a5);
-            recyclerViewDatas.add(R.drawable.a6);
-            recyclerViewDatas.add(R.drawable.a7);
-            recyclerViewDatas.add(R.drawable.a8);
-            recyclerViewDatas.add(R.drawable.a9);
+            for(String s : lytestdata) {
+                recyclerViewDatas.add(s);
+            }
             InnerRecyclerViewAdapter innerRecyclerViewAdapter = new InnerRecyclerViewAdapter(recyclerViewDatas);
             recyclerView.setAdapter(innerRecyclerViewAdapter);
         }

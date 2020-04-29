@@ -4,6 +4,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -14,9 +15,9 @@ import java.util.LinkedList;
 
 public class InnerRecyclerViewAdapter extends RecyclerView.Adapter<InnerRecyclerViewAdapter.BaseViewHolder>{
 
-    LinkedList<Integer> datas;
+    LinkedList<String> datas;
 
-    public InnerRecyclerViewAdapter(LinkedList<Integer> datas) {
+    public InnerRecyclerViewAdapter(LinkedList<String> datas) {
         this.datas = datas;
     }
     @NonNull
@@ -28,7 +29,7 @@ public class InnerRecyclerViewAdapter extends RecyclerView.Adapter<InnerRecycler
 
     @Override
     public void onBindViewHolder(@NonNull BaseViewHolder holder, int position) {
-        holder.imageView.setImageResource(datas.get(position));
+        holder.textView.setText(datas.get(position));
     }
 
     @Override
@@ -37,10 +38,10 @@ public class InnerRecyclerViewAdapter extends RecyclerView.Adapter<InnerRecycler
     }
 
     public  class  BaseViewHolder extends RecyclerView.ViewHolder{
-        ImageView imageView;
+        TextView textView;
         public BaseViewHolder(@NonNull View itemView) {
             super(itemView);
-            this.imageView = itemView.findViewById(R.id.inner_recyclerview_imageview);
+            this.textView = itemView.findViewById(R.id.inner_recyclerview_textview);
         }
     }
 }
