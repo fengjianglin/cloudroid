@@ -105,6 +105,7 @@ public class WrapViewPager2Adapter extends RecyclerView.Adapter<WrapViewPager2Ad
                 public void onPageSelected(int position) {
                     super.onPageSelected(position);
                     titleTextView.setText("播放中：" + viewPager2Datas.get(position).videoUrl.substring(35));
+                    innerViewPager2Adapter.stop();
                 }
             });
 

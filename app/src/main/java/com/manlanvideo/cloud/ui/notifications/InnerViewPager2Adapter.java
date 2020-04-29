@@ -16,11 +16,14 @@ import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 import com.manlanvideo.cloud.R;
 
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 
 public class InnerViewPager2Adapter extends RecyclerView.Adapter<InnerViewPager2Adapter.BaseViewHolder>{
 
     LinkedList<WrapViewPager2Adapter.BaseViewHolder.Data> datas;
+    Map<Integer, ExoPlayer> exoPlayers = new HashMap<>();
 
     public InnerViewPager2Adapter(LinkedList<WrapViewPager2Adapter.BaseViewHolder.Data> datas) {
         this.datas = datas;
@@ -34,12 +37,29 @@ public class InnerViewPager2Adapter extends RecyclerView.Adapter<InnerViewPager2
 
     @Override
     public void onBindViewHolder(@NonNull BaseViewHolder holder, int position) {
-        initializePlayer(holder.playerView, datas.get(position).videoUrl);
+        initializePlayer(holder.playerView, position);
     }
 
     @Override
     public int getItemCount() {
         return datas.size();
+    }
+
+
+    public void play(int position) {
+        for(Map.Entry<Integer, ExoPlayer> entry : exoPlayers.entrySet()) {
+            if(entry.getKey() == position) {
+                entry.getValue().setPlayWhenReady(true);
+            }else {
+                entry.getValue().setPlayWhenReady(false);
+            }
+        }
+    }
+
+    public void stop() {
+        for(Map.Entry<Integer, ExoPlayer> entry : exoPlayers.entrySet()) {
+            entry.getValue().setPlayWhenReady(false);
+        }
     }
 
     public  class  BaseViewHolder extends RecyclerView.ViewHolder{
@@ -50,7 +70,8 @@ public class InnerViewPager2Adapter extends RecyclerView.Adapter<InnerViewPager2
         }
     }
 
-    private void initializePlayer(PlayerView playerView, String url) {
+    private void initializePlayer(PlayerView playerView, int position) {
+        String url = datas.get(position).videoUrl;
         ExoPlayer player = new SimpleExoPlayer.Builder(playerView.getContext()).build();
         playerView.setPlayer(player);
         player.setPlayWhenReady(false);
@@ -58,6 +79,6 @@ public class InnerViewPager2Adapter extends RecyclerView.Adapter<InnerViewPager2
         MediaSource mediaSource = new ProgressiveMediaSource.Factory(new DefaultHttpDataSourceFactory("exoplayer"))
                 .createMediaSource(uri);
         player.prepare(mediaSource, true, false);
+        exoPlayers.put(position, player);
     }
-
 }
