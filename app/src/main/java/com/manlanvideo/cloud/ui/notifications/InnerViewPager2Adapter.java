@@ -4,20 +4,14 @@ import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.exoplayer2.DefaultLoadControl;
-import com.google.android.exoplayer2.DefaultRenderersFactory;
 import com.google.android.exoplayer2.ExoPlayer;
-import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.SimpleExoPlayer;
-import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.source.ProgressiveMediaSource;
-import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 import com.manlanvideo.cloud.R;
@@ -26,9 +20,9 @@ import java.util.LinkedList;
 
 public class InnerViewPager2Adapter extends RecyclerView.Adapter<InnerViewPager2Adapter.BaseViewHolder>{
 
-    LinkedList<String> datas;
+    LinkedList<WrapViewPager2Adapter.BaseViewHolder.Data> datas;
 
-    public InnerViewPager2Adapter(LinkedList<String> datas) {
+    public InnerViewPager2Adapter(LinkedList<WrapViewPager2Adapter.BaseViewHolder.Data> datas) {
         this.datas = datas;
     }
     @NonNull
@@ -40,7 +34,7 @@ public class InnerViewPager2Adapter extends RecyclerView.Adapter<InnerViewPager2
 
     @Override
     public void onBindViewHolder(@NonNull BaseViewHolder holder, int position) {
-        initializePlayer(holder.playerView, datas.get(position));
+        initializePlayer(holder.playerView, datas.get(position).videoUrl);
     }
 
     @Override

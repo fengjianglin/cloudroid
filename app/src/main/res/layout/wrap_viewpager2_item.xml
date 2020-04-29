@@ -43,6 +43,17 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/yanyuan1"/>
 
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/inner_tabs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:tabMode="scrollable"
+        app:tabPaddingStart="0dp"
+        app:tabPaddingEnd="0dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/inner_viewpager2" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/inner_recyclerview"
         android:layout_width="match_parent"
@@ -50,6 +61,6 @@
         android:orientation="horizontal"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/inner_viewpager2"/>
+        app:layout_constraintTop_toBottomOf="@id/inner_tabs"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

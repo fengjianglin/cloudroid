@@ -1,5 +1,8 @@
 package com.manlanvideo.cloud.ui.notifications;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,8 +13,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 import com.manlanvideo.cloud.R;
+import com.squareup.picasso.Picasso;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.LinkedList;
 
 public class WrapViewPager2Adapter extends RecyclerView.Adapter<WrapViewPager2Adapter.BaseViewHolder>{
@@ -39,8 +48,18 @@ public class WrapViewPager2Adapter extends RecyclerView.Adapter<WrapViewPager2Ad
 
     public  class  BaseViewHolder extends RecyclerView.ViewHolder{
 
+        private String[][] testdata = { //
+                {"http://s-dev.manlanvideo.com/clips/一分钟急救系列微课——吃东西被噎.mp4","http://s-dev.manlanvideo.com/covers/a1.jpg"},
+                {"http://s-dev.manlanvideo.com/clips/一分钟急救系列微课——呼吸停止.mp4","http://s-dev.manlanvideo.com/covers/a2.jpg"},
+                {"http://s-dev.manlanvideo.com/clips/一分钟急救系列微课——踝扭伤后不能走.mp4","http://s-dev.manlanvideo.com/covers/a3.jpg"},
+                {"http://s-dev.manlanvideo.com/clips/一分钟急救系列微课——外伤出血.mp4","http://s-dev.manlanvideo.com/covers/a4.jpg"},
+                {"http://s-dev.manlanvideo.com/clips/一分钟急救系列微课——心跳呼吸全无（心肺复苏）.mp4","http://s-dev.manlanvideo.com/covers/a5.jpg"},
+                {"http://s-dev.manlanvideo.com/clips/一分钟急救系列微课——心跳停止（胸外按压）.mp4","http://s-dev.manlanvideo.com/covers/a6.jpg"}
+        };
+
         private ViewPager2 viewPager2;
-        private LinkedList<String> viewPager2Datas;
+        private TabLayout tabLayout;
+        private LinkedList<Data> viewPager2Datas;
 
         private RecyclerView recyclerView;
         private LinkedList<Integer> recyclerViewDatas;
@@ -49,16 +68,25 @@ public class WrapViewPager2Adapter extends RecyclerView.Adapter<WrapViewPager2Ad
             super(itemView);
             viewPager2 = itemView.findViewById(R.id.inner_viewpager2);
             viewPager2Datas = new LinkedList<>();
-            viewPager2Datas.add("http://s-dev.manlanvideo.com/clips/一分钟急救系列微课——吃东西被噎.mp4");
-            viewPager2Datas.add("http://s-dev.manlanvideo.com/clips/一分钟急救系列微课——呼吸停止.mp4");
-            viewPager2Datas.add("http://s-dev.manlanvideo.com/clips/一分钟急救系列微课——踝扭伤后不能走.mp4");
-            viewPager2Datas.add("http://s-dev.manlanvideo.com/clips/一分钟急救系列微课——外伤出血.mp4");
-            viewPager2Datas.add("http://s-dev.manlanvideo.com/clips/一分钟急救系列微课——心跳呼吸全无（心肺复苏）.mp4");
-            viewPager2Datas.add("http://s-dev.manlanvideo.com/clips/一分钟急救系列微课——心跳停止（胸外按压）.mp4");
+            for(String[] d : testdata) {
+                Data data = new Data();
+                data.videoUrl = d[0];
+                data.coverUrl = d[1];
+                viewPager2Datas.add(data);
+            }
             InnerViewPager2Adapter innerViewPager2Adapter = new InnerViewPager2Adapter(viewPager2Datas);
             viewPager2.setAdapter(innerViewPager2Adapter);
             viewPager2.setUserInputEnabled(true);
-
+            tabLayout = itemView.findViewById(R.id.inner_tabs);
+            new TabLayoutMediator(tabLayout, viewPager2, new TabLayoutMediator.TabConfigurationStrategy() {
+                @Override
+                public void onConfigureTab(@NonNull TabLayout.Tab tab, int position) {
+                    View itemView = LayoutInflater.from(viewPager2.getContext()).inflate(R.layout.inner_tabview, null,false);
+                    ImageView imageView = itemView.findViewById(R.id.inner_tabview_imageview);
+                    Picasso.get().load(viewPager2Datas.get(position).coverUrl).into(imageView);
+                    tab.setCustomView(itemView);
+                }
+            }).attach();
 
             recyclerView = itemView.findViewById(R.id.inner_recyclerview);
             // 设置布局
@@ -78,6 +106,11 @@ public class WrapViewPager2Adapter extends RecyclerView.Adapter<WrapViewPager2Ad
             recyclerViewDatas.add(R.drawable.a9);
             InnerRecyclerViewAdapter innerRecyclerViewAdapter = new InnerRecyclerViewAdapter(recyclerViewDatas);
             recyclerView.setAdapter(innerRecyclerViewAdapter);
+        }
+
+        public class Data {
+            public String videoUrl;
+            public String coverUrl;
         }
     }
 }
