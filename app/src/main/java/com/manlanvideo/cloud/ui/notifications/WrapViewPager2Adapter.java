@@ -21,6 +21,7 @@ import java.util.LinkedList;
 public class WrapViewPager2Adapter extends RecyclerView.Adapter<WrapViewPager2Adapter.BaseViewHolder>{
 
     LinkedList<Integer> datas;
+    LinkedList<InnerViewPager2Adapter> innerViewPager2Adapters = new LinkedList<>();
 
     public WrapViewPager2Adapter(LinkedList<Integer> datas) {
         this.datas = datas;
@@ -34,11 +35,18 @@ public class WrapViewPager2Adapter extends RecyclerView.Adapter<WrapViewPager2Ad
 
     @Override
     public void onBindViewHolder(@NonNull BaseViewHolder holder, int position) {
+        innerViewPager2Adapters.add(holder.getAdapter());
     }
 
     @Override
     public int getItemCount() {
         return datas.size();
+    }
+
+    public void stopVideo () {
+        for(InnerViewPager2Adapter adapter : innerViewPager2Adapters) {
+            adapter.stop();
+        }
     }
 
     public  class  BaseViewHolder extends RecyclerView.ViewHolder{
@@ -70,6 +78,7 @@ public class WrapViewPager2Adapter extends RecyclerView.Adapter<WrapViewPager2Ad
         private ViewPager2 viewPager2;
         private TabLayout tabLayout;
         private LinkedList<Data> viewPager2Datas;
+        private InnerViewPager2Adapter innerViewPager2Adapter;
 
         private TextView titleTextView;
 
@@ -86,7 +95,7 @@ public class WrapViewPager2Adapter extends RecyclerView.Adapter<WrapViewPager2Ad
                 data.coverUrl = d[1];
                 viewPager2Datas.add(data);
             }
-            InnerViewPager2Adapter innerViewPager2Adapter = new InnerViewPager2Adapter(viewPager2Datas);
+            innerViewPager2Adapter = new InnerViewPager2Adapter(viewPager2Datas);
             viewPager2.setAdapter(innerViewPager2Adapter);
             viewPager2.setUserInputEnabled(true);
             tabLayout = itemView.findViewById(R.id.inner_tabs);
@@ -120,6 +129,10 @@ public class WrapViewPager2Adapter extends RecyclerView.Adapter<WrapViewPager2Ad
             }
             InnerRecyclerViewAdapter innerRecyclerViewAdapter = new InnerRecyclerViewAdapter(recyclerViewDatas);
             recyclerView.setAdapter(innerRecyclerViewAdapter);
+        }
+
+        public InnerViewPager2Adapter getAdapter() {
+            return innerViewPager2Adapter;
         }
 
         public class Data {

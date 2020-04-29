@@ -21,6 +21,7 @@ public class NotificationsFragment extends Fragment {
 
     private ViewPager2 viewPager2;
     private LinkedList<Integer> datas;
+    private WrapViewPager2Adapter baseAdapter;
     private Context context;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -31,26 +32,28 @@ public class NotificationsFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_notifications, container, false);
 
         viewPager2 = root.findViewById(R.id.wrap_viewpager2);
-
-        datas =new LinkedList<>();
-        datas.add(R.drawable.a1);
-        datas.add(R.drawable.a2);
-        datas.add(R.drawable.a3);
-        datas.add(R.drawable.a4);
-        datas.add(R.drawable.a5);
-        datas.add(R.drawable.a6);
-        datas.add(R.drawable.a7);
-        datas.add(R.drawable.a8);
-        datas.add(R.drawable.a9);
-
-
-
-        WrapViewPager2Adapter baseAdapter =new WrapViewPager2Adapter(datas);
+        datas = new LinkedList<>();
+        for(int i = 0; i<10;i++) {
+            datas.add(i);
+        }
+        baseAdapter = new WrapViewPager2Adapter(datas);
         viewPager2.setAdapter(baseAdapter);
         // 用户手势滑动
         viewPager2.setUserInputEnabled(true);
 
+        viewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+                baseAdapter.stopVideo();
+            }
+        });
         return root;
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        baseAdapter.stopVideo();
+    }
 }
