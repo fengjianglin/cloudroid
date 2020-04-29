@@ -1,8 +1,5 @@
 package com.manlanvideo.cloud.ui.notifications;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,9 +16,6 @@ import com.google.android.material.tabs.TabLayoutMediator;
 import com.manlanvideo.cloud.R;
 import com.squareup.picasso.Picasso;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.LinkedList;
 
 public class WrapViewPager2Adapter extends RecyclerView.Adapter<WrapViewPager2Adapter.BaseViewHolder>{
@@ -102,10 +96,10 @@ public class WrapViewPager2Adapter extends RecyclerView.Adapter<WrapViewPager2Ad
             recyclerView = itemView.findViewById(R.id.inner_recyclerview);
             // 设置布局
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(itemView.getContext());
-            linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+            linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
             recyclerView.setLayoutManager(linearLayoutManager);
 
-            recyclerViewDatas =new LinkedList<>();
+            recyclerViewDatas = new LinkedList<>();
             recyclerViewDatas.add(R.drawable.a1);
             recyclerViewDatas.add(R.drawable.a2);
             recyclerViewDatas.add(R.drawable.a3);
