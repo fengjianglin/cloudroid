@@ -10,8 +10,10 @@ import io.reactivex.Observable;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
 
-public interface ClipService {
+public interface NerService {
+
     @Headers("Cache-Control: public, max-age=5")
-    @GET(UrlConstants.URI_CLIP_LIST)
-    Observable<ApiResult<List<Clip>>> getForList();
+    @GET("/nerapi")
+    Observable<String> get();
+
 }

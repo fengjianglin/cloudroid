@@ -17,104 +17,37 @@ import androidx.annotation.Nullable;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.manlanvideo.cloud.R;
+import com.manlanvideo.cloud.api.entity.Clip;
+import com.manlanvideo.cloud.ui.home.adapter.items.ItemFactory;
+
+import java.io.IOException;
+import java.util.List;
 
 public class DashboardFragment extends Fragment {
 
     private DashboardViewModel dashboardViewModel;
 
-
-    private ViewFlipper flipper;
-    private GestureDetector mDetector; //手势检测
-
     private Context context;
+    private TextView textView;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         context =  inflater.getContext();
-        dashboardViewModel =
-                ViewModelProviders.of(this).get(DashboardViewModel.class);
+        dashboardViewModel = new ViewModelProvider(this).get(DashboardViewModel.class);
         View root = inflater.inflate(R.layout.fragment_dashboard, container, false);
+        textView = root.findViewById(R.id.textview);
 
-        flipper = root.findViewById(R.id.flipper);
-        flipper.addView(getImageView(context, R.drawable.a1));
-        flipper.addView(getImageView(context, R.drawable.a2));
-        flipper.addView(getImageView(context, R.drawable.a3));
-        flipper.addView(getImageView(context, R.drawable.a4));
-        flipper.addView(getImageView(context, R.drawable.a5));
-        flipper.addView(getImageView(context, R.drawable.a6));
-        flipper.addView(getImageView(context, R.drawable.a7));
-        flipper.addView(getImageView(context, R.drawable.a8));
-        flipper.addView(getImageView(context, R.drawable.a9));
-        
-        mDetector = new GestureDetector(inflater.getContext(), touchListener);
-        flipper.setOnTouchListener(new View.OnTouchListener() {
+        dashboardViewModel.getText(context).observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                mDetector.onTouchEvent(motionEvent);
-                return true;
+            public void onChanged(String str) {
+                textView.setText(str);
             }
         });
-        flipper.setClickable(true);
-        flipper.setLongClickable(true);
-
         return root;
     }
-
-    private ImageView getImageView(Context context , int id){
-        ImageView imageView = new ImageView(context);
-        imageView.setImageResource(id);
-        return imageView;
-    }
-
-
-    private GestureDetector.SimpleOnGestureListener touchListener  = new GestureDetector.SimpleOnGestureListener() {
-
-        final int FLING_MIN_DISTANCE = 100, FLING_MIN_VELOCITY = 200;
-
-        @Override
-        public boolean onDown(MotionEvent e) {
-            return true; // 这里需要返回true才能监听手势
-        }
-        @Override
-        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
-                               float velocityY) {
-            // Fling left  从右向左划
-            if (e1.getX() - e2.getX() > FLING_MIN_DISTANCE
-                    && Math.abs(velocityX) > FLING_MIN_VELOCITY) {
-                flipper.setOutAnimation(AnimationUtils.loadAnimation(context,
-                        R.anim.push_left_out));
-                flipper.setInAnimation(AnimationUtils.loadAnimation(context,
-                        R.anim.push_left_in));
-                flipper.showNext();//显示下一个视图
-            } else if (e2.getX() - e1.getX() > FLING_MIN_DISTANCE
-                    && Math.abs(velocityX) > FLING_MIN_VELOCITY) {
-                // Fling right 从左向右划
-                flipper.setOutAnimation(AnimationUtils.loadAnimation(context,
-                        R.anim.push_right_out));
-                flipper.setInAnimation(AnimationUtils.loadAnimation(context,
-                        R.anim.push_right_in));
-                flipper.showPrevious();//显示上一个视图
-            }else if (e1.getY()-e2.getY()>FLING_MIN_DISTANCE&& Math.abs(velocityY) > FLING_MIN_VELOCITY){
-                //从下向上划
-                flipper.setOutAnimation(AnimationUtils.loadAnimation(context,
-                        R.anim.push_up_out));
-                flipper.setInAnimation(AnimationUtils.loadAnimation(context,
-                        R.anim.push_up_in));
-                flipper.showNext();//显示下一个视图
-            }else if (e2.getY()-e1.getY()>FLING_MIN_DISTANCE&& Math.abs(velocityY) > FLING_MIN_VELOCITY){
-                //从上向下划
-                flipper.setOutAnimation(AnimationUtils.loadAnimation(context,
-                        R.anim.push_down_out));
-                flipper.setInAnimation(AnimationUtils.loadAnimation(context,
-                        R.anim.push_down_in));
-                flipper.showPrevious();//显示上一个视图
-            }
-            flipper.setEnabled(true);
-            return true;
-        }
-    };
 
 }
