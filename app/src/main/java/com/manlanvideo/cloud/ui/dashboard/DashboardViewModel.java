@@ -1,6 +1,8 @@
 package com.manlanvideo.cloud.ui.dashboard;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -21,6 +23,8 @@ public class DashboardViewModel extends ViewModel {
 
     private MutableLiveData<String> mText = null;
 
+    private MutableLiveData<Bitmap> mBitmap = null;
+
     public DashboardViewModel() {
     }
 
@@ -30,6 +34,14 @@ public class DashboardViewModel extends ViewModel {
             loadString(context);
         }
         return mText;
+    }
+
+    public LiveData<Bitmap> getImage(Context context) {
+        if (mBitmap == null) {
+            mBitmap = new MutableLiveData<Bitmap>();
+            loadImage(context);
+        }
+        return mBitmap;
     }
 
     private void loadString(Context context) {
@@ -68,5 +80,43 @@ public class DashboardViewModel extends ViewModel {
 
         NerApiHandler.getInstance(context).toSubscribe(observable, observer);
 
+    }
+
+    private void loadImage(Context context) {
+
+        NerService nerService = NerApiHandler.getInstance(context).createService(NerService.class);
+        Observable<ResponseBody> observable = nerService.getImage();
+        Observer observer = new Observer<ResponseBody>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+
+            }
+
+            @Override
+            public void onNext(ResponseBody responseBody) {
+                Bitmap bitmap = BitmapFactory.decodeStream(responseBody.byteStream());
+                mBitmap.postValue(bitmap);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                if(e instanceof HttpException){
+                    ResponseBody body = ((HttpException) e).response().errorBody();
+                    try {
+                        mText.postValue(body.string());
+                        return;
+                    } catch (IOException IOe) {
+                        IOe.printStackTrace();
+                    }
+                }
+                mText.postValue(e.getMessage());
+            }
+
+            @Override
+            public void onComplete() {
+            }
+        };
+
+        NerApiHandler.getInstance(context).toSubscribe(observable, observer);
     }
 }
