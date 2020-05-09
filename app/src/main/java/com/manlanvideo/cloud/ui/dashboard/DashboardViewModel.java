@@ -1,26 +1,15 @@
 package com.manlanvideo.cloud.ui.dashboard;
 
 import android.content.Context;
-import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.manlanvideo.cloud.api.ApiCallBack;
-import com.manlanvideo.cloud.api.ApiHandler;
-import com.manlanvideo.cloud.api.ApiResult;
 import com.manlanvideo.cloud.api.NerApiHandler;
-import com.manlanvideo.cloud.api.entity.Clip;
-import com.manlanvideo.cloud.api.services.ClipService;
 import com.manlanvideo.cloud.api.services.NerService;
 
 import java.io.IOException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import io.reactivex.Observable;
 import io.reactivex.Observer;
@@ -38,18 +27,12 @@ public class DashboardViewModel extends ViewModel {
     public LiveData<String> getText(Context context) {
         if (mText == null) {
             mText = new MutableLiveData<String>();
-            try {
-                loadString(context);
-            } catch (KeyStoreException e) {
-                e.printStackTrace();
-            } catch (NoSuchAlgorithmException e) {
-                e.printStackTrace();
-            }
+            loadString(context);
         }
         return mText;
     }
 
-    private void loadString(Context context) throws KeyStoreException, NoSuchAlgorithmException {
+    private void loadString(Context context) {
 
         NerService nerService = NerApiHandler.getInstance(context).createService(NerService.class);
         Observable<String> observable = nerService.get();
