@@ -9,13 +9,13 @@ import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
-import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
-import java.security.cert.CertificateFactory;
+import java.util.Arrays;
 
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
 
@@ -36,28 +36,22 @@ public class SSL {
         return sslContext != null ? sslContext.getSocketFactory() : null;
     }
 
-    public static X509TrustManager getX509TrustManager(Context context){
-        KeyStore trustStore = null;
+    public static X509TrustManager getX509TrustManager() {
         TrustManagerFactory trustManagerFactory = null;
         try {
-            CertificateFactory cf = CertificateFactory.getInstance("X.509");
-            InputStream in = context.getAssets().open("fullchain.pem");
-            Certificate ca = cf.generateCertificate(in);
-            trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
-            trustStore.load(null, null);
-            trustStore.setCertificateEntry("ca", ca);
             trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
-            trustManagerFactory.init(trustStore);
-        } catch (KeyStoreException e) {
-            e.printStackTrace();
-        } catch (CertificateException e) {
-            e.printStackTrace();
+            trustManagerFactory.init((KeyStore) null);
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
-        } catch (IOException e) {
+        } catch (KeyStoreException e) {
             e.printStackTrace();
         }
-        return (X509TrustManager) trustManagerFactory.getTrustManagers()[0];
+        TrustManager[] trustManagers = trustManagerFactory.getTrustManagers();
+        if (trustManagers.length != 1 || !(trustManagers[0] instanceof X509TrustManager)) {
+            throw new IllegalStateException("Unexpected default trust managers:" + Arrays.toString(trustManagers));
+        }
+        X509TrustManager trustManager = (X509TrustManager) trustManagers[0];
+        return trustManager;
     }
 
     /**
@@ -66,7 +60,6 @@ public class SSL {
      * @return
      */
     private static KeyManagerFactory getKeyManagerFactory(Context context){
-
         KeyStore keyStore = null;
         KeyManagerFactory keyManagerFactory = null;
         try {
@@ -89,5 +82,4 @@ public class SSL {
         }
         return keyManagerFactory;
     }
-
 }

@@ -7,8 +7,6 @@ import com.google.gson.GsonBuilder;
 
 import java.util.concurrent.TimeUnit;
 
-import javax.net.ssl.X509TrustManager;
-
 import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -30,10 +28,9 @@ public class NerApiHandler {
     private Retrofit mRetrofit;
 
     private NerApiHandler(Context context) {
-
         OkHttpClient.Builder okHBuilder = new OkHttpClient.Builder();
         okHBuilder.connectTimeout(CONNECT_TIMEOUT, TimeUnit.SECONDS)
-                .sslSocketFactory(SSL.getSSLSocketFactory(context), SSL.getX509TrustManager(context))
+                .sslSocketFactory(SSL.getSSLSocketFactory(context), SSL.getX509TrustManager())
                 .readTimeout(READ_TIMEOUT, TimeUnit.SECONDS)
                 .writeTimeout(WRITE_TIMEOUT, TimeUnit.SECONDS)
                 .retryOnConnectionFailure(true);
