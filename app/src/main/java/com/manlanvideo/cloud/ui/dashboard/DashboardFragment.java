@@ -83,9 +83,6 @@ public class DashboardFragment extends Fragment {
                         }
                         return new WebResourceResponse(mimeType, encoding, is);
                     }
-
-                } catch (SSLHandshakeException e) {
-
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
