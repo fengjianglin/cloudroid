@@ -39,7 +39,7 @@ public class DashboardViewModel extends ViewModel {
     public LiveData<Bitmap> getImage(Context context) {
         if (mBitmap == null) {
             mBitmap = new MutableLiveData<Bitmap>();
-            loadImage(context);
+            //loadImage(context);
         }
         return mBitmap;
     }
