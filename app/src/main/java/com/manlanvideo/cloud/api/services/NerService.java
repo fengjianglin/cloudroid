@@ -29,4 +29,9 @@ public interface NerService {
     @Headers("Cache-Control: public, max-age=5")
     @GET("/nerapi/app/news/index.html?id=c0310c0851364a7d84f1d3d2f47e1432")
     Observable<String> newsDetail();
+
+    @Headers("Cookie: token=1a4e901beaf6444dae1444f1731eba72")
+    @POST("/nerapi/app/message/list")
+    Observable<String> newsList(Object o);
+
 }

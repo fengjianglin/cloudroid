@@ -73,6 +73,7 @@ public class DashboardFragment extends Fragment {
                     URL url = new URL(uri.toString());
                     HttpsURLConnection urlConnection = (HttpsURLConnection) url.openConnection();
                     urlConnection.setSSLSocketFactory(SSL.getSSLSocketFactory(context));
+                    urlConnection.setRequestMethod("POST");
                     InputStream is = urlConnection.getInputStream();
                     String contentType = urlConnection.getContentType();
                     String encoding = urlConnection.getContentEncoding();
@@ -95,7 +96,7 @@ public class DashboardFragment extends Fragment {
             }
         });
 
-        webView.loadUrl("https://nerapp.xxicp.cn/nerapi/app/news/index.html?id=c0310c0851364a7d84f1d3d2f47e1432");
+//        webView.loadUrl("https://nerapp.xxicp.cn/nerapi/app/news/index.html?id=c0310c0851364a7d84f1d3d2f47e1432");
 //        webView.loadUrl("https://nerapp.xxicp.cn/nerapi/app/news/detail?id=c0310c0851364a7d84f1d3d2f47e1432");
 
         dashboardViewModel.getText(context).observe(getViewLifecycleOwner(), new Observer<String>() {
